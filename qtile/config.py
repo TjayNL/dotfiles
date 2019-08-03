@@ -11,12 +11,22 @@ mod = "mod4"
 ##### QTILE KEY BINDS #####
 keys = [
     # Switch between windows in current stack pane
-    Key([mod], "k", lazy.layout.down()),
-    Key([mod], "j", lazy.layout.up()),
+    Key([mod], "a", lazy.layout.left()),
+    Key([mod], "d", lazy.layout.right()),
+    Key([mod], "s", lazy.layout.down()),
+    Key([mod], "w", lazy.layout.up()),
 
+    # Switch between windows in current stack pane
+    Key([mod], "p", lazy.layout.grow()),
+    Key([mod], "o", lazy.layout.shrink()),
+    Key([mod], "n", lazy.layout.normalize()),
+    Key([mod], "m", lazy.layout.maximize()),
+    
     # Move windows up or down in current stack
-    Key([mod, "control"], "k", lazy.layout.shuffle_down()),
-    Key([mod, "control"], "j", lazy.layout.shuffle_up()),
+    Key([mod, "shift"], "s", lazy.layout.shuffle_down()),
+    Key([mod, "shift"], "w", lazy.layout.shuffle_up()),
+    Key([mod, "shift"], "a", lazy.layout.swap_left()),
+    Key([mod, "shift"], "d", lazy.layout.swap_right()),
 
     # Switch window focus to other pane(s) of stack
     Key([mod], "space", lazy.layout.next()),
@@ -33,22 +43,23 @@ keys = [
 
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout()),
-    Key([mod], "w", lazy.window.kill()),
+    Key([mod], "q", lazy.window.kill()),
 
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
     Key([mod], "r", lazy.spawncmd()),
 
     ##### CUSTOM KEYBINDS #####
-    Key([mod, "shift"], "c", lazy.spawn("code-oss")),
-    Key([mod, "shift"], "f", lazy.spawn("firefox")),
+    Key([mod, "control"], "c", lazy.spawn("code-oss")),
+    Key([mod, "control"], "f", lazy.spawn("pcmanfm")),
+    Key([mod, "control"], "b", lazy.spawn("firefox")),
     Key([mod, "control"], "s", lazy.spawn("spotify")),
-    Key([mod, "shift"], "s", lazy.spawn("pavucontrol")),
+    Key([mod, "control"], "p", lazy.spawn("pavucontrol")),
 
 
     # Commands: Volume Controls
-    #Key([], 'XF86AudioRaiseVolume', lazy.spawn("amixer -q -c 1 sset Master 5dB+")),
-    #Key([], 'XF86AudioLowerVolume', lazy.spawn("amixer -q -c 1 sset Master 5dB-")),
+    Key([], 'XF86AudioRaiseVolume', lazy.spawn("amixer -q -c 3 sset Master 5dB+")),
+    Key([], 'XF86AudioLowerVolume', lazy.spawn("amixer -q -c 3 sset 'Master' 5dB-")),
     Key([], 'XF86AudioMute', lazy.spawn("amixer -q -D pulse sset Master 1+ toggle")),
 ]
 
@@ -60,13 +71,19 @@ groups = [
                                     Match(wm_class=["dolphin"]),
                                     Match(wm_class=["Thunar"]),
                                     Match(wm_class=["nautilus"]),
+                                    Match(wm_class=["Pcmanfm"]),
                                     ]
     ),
     Group('4', label="GAME", matches=[Match(wm_class=["Steam"])]),
     Group('5', label="OBS", matches=[Match(wm_class=["obs"])]),
     Group("6", label="CHAT", matches=[Match(wm_class=["discord"])]),
     Group("7", label="MEDIA", matches=[Match(wm_class=["Spotify"])]),
-    Group("8", label="GFX"),
+    Group("8", label="GFX", matches=[
+                                    Match(wm_class=["Gimp"]),
+                                    Match(wm_class=["Inkscape"]),
+                                    Match(wm_class=["GravitDesigner"]),
+                                    ]
+    ),
 ]
 for i in groups:
     # mod + letter of group = switch to group
@@ -82,6 +99,7 @@ dgroups_app_rules = []
 layouts = [
     layout.Max(),
     layout.Stack(num_stacks=2),
+    layout.tree.TreeTab(),
     layout.MonadTall(),
     layout.Floating(),
 ]
@@ -95,9 +113,9 @@ screens = [
             widgets=[
                 widget.GroupBox(
                     active='ffffff',
-                    inactive='222222',
+                    inactive='333333',
                     highlight_method='line',
-                    highlight_color='000000',
+                    highlight_color='0F0F0F',
                     this_current_screen_border='FFCD00',
                     this_screen_border='FFCD00',
                 ),
@@ -105,50 +123,113 @@ screens = [
                 widget.WindowName(
                     fontsize=15,
                 ),
-                widget.Systray(),
-                widget.CPUGraph(
-                    graph_color='18BAEB',
-                    fill_color='FFCD00.3',
-                    background='000000',
-                    border_width=0,
-                    border_color='000000',
-                    line_width=1,
-                    margin_x=0,
-                    margin_y=0,
-                    width=50,
+                widget.Spacer(
+                    length=75
                 ),
-                widget.MemoryGraph(
-                    graph_color='00FE81',
-                    fill_color='00B25B.3',
-                    background='000000',
-                    border_width=0,
-                    border_color='000000',
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    padding=0,
+                    foreground="FFCD00"
+                ),
+                widget.Net(
+                    interface="enp4s0",
+                ),
+                widget.Spacer(
+                    length=10
+                ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    #text=(""),
+                    padding=0,
+                    foreground="FFCD00"
+                ),
+                widget.CPUGraph(
+                    type="linefill",
                     line_width=1,
-                    margin_x=0,
-                    margin_y=0,
-                    width=50,
+                    graph_color="FFCD00",
+                    fill_color="FFCD00.3",
+                    border_color="0F0F0F",
+                ),
+                widget.Spacer(
+                    length=10
+                ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    padding=0,
+                    foreground="FFCD00"
                 ),
                 widget.Memory(
                     fmt="{MemUsed}M",
                     update_interval=10,
-                    background='000000'
+                ),
+                #widget.MemoryGraph(
+                #    type="linefill",
+                #    line_width=1,
+                #    graph_color="FFCD00",
+                #    fill_color="FFCD00.3",
+                #    border_color="000000",
+                #),
+                widget.Spacer(
+                    length=10
+                ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    padding=0,
+                    foreground="FFCD00"
                 ),
                 widget.ThermalSensor(),
-                widget.Sep( linewidth=1, foreground='999999', size_percent=50 ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    padding =5,
+                    foreground="FFCD00"
+                ),
+                widget.Pacman(
+                    execute="termite",
+                    update_interval=1800,
+                ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    foreground="FFCD00"
+                ),
                 widget.CurrentLayout(),
-                widget.Sep( linewidth=1, foreground='999999', size_percent=50 ),
-                # widget.Volume(
-                #    device='Scarlett Solo USB'
-                #),
-                widget.Pacman(),
-                widget.Sep( linewidth=1, foreground='999999', size_percent=50 ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    foreground="FFCD00"
+                ),
+                widget.Volume(
+                    device='default'
+                ),
+                widget.Spacer(
+                    length=5
+                ),
+                widget.TextBox(
+                    font="font-awesome",
+                    text=(""),
+                    padding=0,
+                    foreground="FFCD00"
+                ),
                 widget.Clock(
-                    fontsize=12,
-                    format='%a %d %b %H:%M'
-                )
+                    format='%a %d %b - %H:%M'
+                ),
+                widget.Spacer(
+                    length=5
+                ),
+                widget.Systray(
+                    icon_size=16,
+                ),
+                widget.Spacer(
+                    length=5
+                ),
             ],
             size=30,
-            background='000000',
+            background='0F0F0F',
         ),
     ),
 ]
