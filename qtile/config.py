@@ -47,14 +47,20 @@ keys = [
 
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
-    Key([mod], "r", lazy.spawncmd()),
 
-    ##### CUSTOM KEYBINDS #####
+
+    Key([mod], "r", lazy.spawn("rofi -modi ssh,run,drun -show drun run ssh -theme flat-yellow")),
+
+    # Programm Keybinds
     Key([mod, "control"], "c", lazy.spawn("code-oss")),
     Key([mod, "control"], "f", lazy.spawn("pcmanfm")),
     Key([mod, "control"], "b", lazy.spawn("firefox")),
     Key([mod, "control"], "s", lazy.spawn("spotify")),
+    Key([mod, "control"], "v", lazy.spawn("discord")),
+
+    # System control keybinds
     Key([mod, "control"], "p", lazy.spawn("pavucontrol")),
+    Key([mod, "control"], "l", lazy.spawn("lxappearance")),
 
 
     # Commands: Volume Controls
@@ -68,9 +74,6 @@ groups = [
     Group("1", label="DEV", matches=[Match(wm_class=["code-oss"])]),
     Group("2", label="WWW", matches=[Match(wm_class=["firefox"])]),
     Group('3', label="SYS", matches=[
-                                    Match(wm_class=["dolphin"]),
-                                    Match(wm_class=["Thunar"]),
-                                    Match(wm_class=["nautilus"]),
                                     Match(wm_class=["Pcmanfm"]),
                                     ]
     ),
@@ -113,7 +116,7 @@ screens = [
             widgets=[
                 widget.GroupBox(
                     active='ffffff',
-                    inactive='333333',
+                    inactive='444444',
                     highlight_method='line',
                     highlight_color='0F0F0F',
                     this_current_screen_border='FFCD00',
@@ -184,7 +187,7 @@ screens = [
                 widget.ThermalSensor(),
                 widget.TextBox(
                     font="font-awesome",
-                    text=(""),
+                    text=(""),
                     padding =5,
                     foreground="FFCD00"
                 ),
@@ -194,7 +197,7 @@ screens = [
                 ),
                 widget.TextBox(
                     font="font-awesome",
-                    text=(""),
+                    text=(""),
                     foreground="FFCD00"
                 ),
                 widget.CurrentLayout(),
@@ -225,7 +228,7 @@ screens = [
                     icon_size=16,
                 ),
                 widget.Spacer(
-                    length=5
+                    length=10
                 ),
             ],
             size=30,
@@ -269,7 +272,7 @@ floating_layout = layout.Floating(float_rules=[
     {'wname': 'branchdialog'},  # gitk
     {'wname': 'pinentry'},  # GPG key password entry
     {'wmclass': 'ssh-askpass'},  # ssh-askpass
-    {'wmclass': 'pavucontrol'},
+    #{'wmclass': 'pavucontrol'},
 ])
 auto_fullscreen = True
 focus_on_window_activation = "smart"
